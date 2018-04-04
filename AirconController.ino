@@ -128,6 +128,7 @@ void setup(void)
   Serial.begin(115200);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
+  irsend.begin();
   // configure access point
   WiFi.mode(WIFI_AP);
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
@@ -168,9 +169,9 @@ void handleRoot() { // przykładowy query string http://www.aircon.com/?mode=1&t
       {
 
           String validationErrors = "";
-          if(IsValid(mode, temp, validationErrors))
+          if(isValid(mode, temp, validationErrors))
           {          
-            if (SendData(mode, temp))  // wysłanie danych 
+            if (sendData(mode, temp))  // wysłanie danych 
             {
               server.send(200, "text/html", "OK"); // informacja o poprawnie wykonanej operacji
               Serial.print("Temp set to: "); // log do serial monitora o ustawionych parametrach.
@@ -205,20 +206,20 @@ void handleRoot() { // przykładowy query string http://www.aircon.com/?mode=1&t
   }
 }
 
-bool SendData(int mode, int temp)
+bool sendData(int mode, int temp)
 {
-  //TODO: Send data to ir diode
+  sendUpdate(mode,temp);
   return true;
 }
 
 
 
 
-bool IsValid(int mode, int temp, String& validationErrors)
+bool isValid(int mode, int temp, String& validationErrors)
 {
   bool isValid = true;
   //TODO Ustawić poprawne warunki
-  if(mode < 0 || mode > 3 )
+  if(mode < 0 || mode > 4 )
   {
     isValid = false;
     validationErrors = validationErrors + "<h1>Mode should have value between 0 and 3</h1> \r\n";
