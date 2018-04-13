@@ -199,6 +199,51 @@ void handleRoot() { // przykładowy query string http://www.aircon.com/?mode=1&t
       Serial.println("Invalid query parameters"); // log do serial monitora o błędzie
     }
   }
+  else if(server.args() == 0)
+  {
+    server.send(200, "text/html","<!DOCTYPE html>\
+<html>\
+<head>\
+<title>AIRCON</title>\
+</head>\
+\
+<body>\
+<form action=\"/\" method=\"GET\">\
+<select name=\"mode\">\
+  <option value=\"0\">AUTO</option>\
+  <option value=\"1\">COOL</option>\
+  <option value=\"2\">DRY</option>\
+  <option value=\"3\">FAN</option>\
+  <option value=\"4\">HEAT</option>\
+</select> \
+\
+ <select name=\"temp\">\
+  <option value=\"16\">16</option>\
+  <option value=\"17\">17</option>\
+  <option value=\"18\">18</option>\
+  <option value=\"19\">19</option>\
+  <option value=\"20\">20</option>\
+  <option value=\"21\">21</option>\
+  <option value=\"22\">22</option>\
+  <option value=\"23\">23</option>\
+  <option value=\"24\">24</option>\
+  <option value=\"25\">25</option>\
+  <option value=\"26\">26</option>\
+  <option value=\"27\">27</option>\
+  <option value=\"28\">28</option>\
+  <option value=\"29\">29</option>\
+  <option value=\"30\">30</option>\
+  <option value=\"31\">31</option>\
+</select> \
+\
+<input type=\"submit\" value=\"SEND\" />\
+\
+</form>\
+</body>\
+\
+</html>\
+");
+  }
   else 
   {
     server.send(200, "text/html", "Invalid number of query parameters");
