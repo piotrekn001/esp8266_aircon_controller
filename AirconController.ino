@@ -3,6 +3,7 @@
 #include "DNSServer.h"
 #include <IRremoteESP8266.h>
 #include <IRsend.h>
+#include "FS.h"
 
 IRsend irsend(4);  // An IR LED is controlled by GPIO pin 4 (D2)
 
@@ -63,6 +64,37 @@ IPAddress         apIP(10, 10, 10, 10);    // Private network for server
 DNSServer         dnsServer;              // Create the DNS object 
 // TCP server at port 80 will respond to HTTP requests
 ESP8266WebServer server(80);
+
+String getContentType(String filename) {
+  if (server.hasArg("download")) {
+    return "application/octet-stream";
+  } else if (filename.endsWith(".htm")) {
+    return "text/html";
+  } else if (filename.endsWith(".html")) {
+    return "text/html";
+  } else if (filename.endsWith(".css")) {
+    return "text/css";
+  } else if (filename.endsWith(".js")) {
+    return "application/javascript";
+  } else if (filename.endsWith(".png")) {
+    return "image/png";
+  } else if (filename.endsWith(".gif")) {
+    return "image/gif";
+  } else if (filename.endsWith(".jpg")) {
+    return "image/jpeg";
+  } else if (filename.endsWith(".ico")) {
+    return "image/x-icon";
+  } else if (filename.endsWith(".xml")) {
+    return "text/xml";
+  } else if (filename.endsWith(".pdf")) {
+    return "application/x-pdf";
+  } else if (filename.endsWith(".zip")) {
+    return "application/x-zip";
+  } else if (filename.endsWith(".gz")) {
+    return "application/x-gzip";
+  }
+  return "text/plain";
+}
 
 void sendUpdate(uint8_t mode, uint8_t temp) {
   packet p;
@@ -133,7 +165,10 @@ void setup(void)
   WiFi.mode(WIFI_AP);
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(ssid,password); // WiFi name
-  dnsServer.start(DNS_PORT, "www.AIRCON.com", apIP);
+  dnsServer.start(DNS_PORT, "AIRCON.local", apIP);
+
+  SPIFFS.begin();
+  
   // Wait for connection
   server.onNotFound(notFound);
   server.on("/", handleRoot);
@@ -149,7 +184,15 @@ void setup(void)
   }
 
 void notFound() {
-  server.send(200, "text/html", "<h1>Wrong request</h1>");
+  Serial.print("request: ");
+  Serial.println(server.uri());
+  if(SPIFFS.exists(server.uri())) {
+    String contentType = getContentType(server.uri());
+    File file = SPIFFS.open(server.uri(), "r");
+    server.streamFile(file, contentType);
+    file.close();
+  }
+  server.send(404, "text/html", "<h1>File not found</h1>");
 }
 void handleRoot() { // przykładowy query string http://www.aircon.com/?mode=1&temp=1
   if(server.args() == 2) // walidacja ilości argumentów
@@ -201,6 +244,12 @@ void handleRoot() { // przykładowy query string http://www.aircon.com/?mode=1&t
   }
   else if(server.args() == 0)
   {
+    File f = SPIFFS.open("/index.htm", "r");
+    if (f) {
+      server.streamFile(f, "text/html");
+      f.close();
+    }
+/*
     server.send(200, "text/html","<!DOCTYPE html>\
 <html>\
 <head>\
@@ -242,7 +291,7 @@ void handleRoot() { // przykładowy query string http://www.aircon.com/?mode=1&t
 </body>\
 \
 </html>\
-");
+");*/
   }
   else 
   {

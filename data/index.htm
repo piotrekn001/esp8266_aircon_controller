@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>AIRCON Control</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="form-validation.css" rel="stylesheet">
+  </head>
+
+  <body class="bg-light">
+
+    <div class="container">
+		<form action="/" method="GET">
+		<div class="row">
+			<select class="custom-select d-block w-100" name="mode">
+			  <option value="0">AUTO</option>
+			  <option value="1">COOL</option>
+			  <option value="2">DRY</option>
+			  <option value="3">FAN</option>
+			  <option value="4">HEAT</option>
+			</select> 
+		</div>
+
+		<div class="row">
+			 <select class="custom-select d-block w-100" name="temp">
+			  <option value="16">16</option>
+			  <option value="17">17</option>
+			  <option value="18">18</option>
+			  <option value="19">19</option>
+			  <option value="20">20</option>
+			  <option value="21">21</option>
+			  <option value="22">22</option>
+			  <option value="23">23</option>
+			  <option value="24">24</option>
+			  <option value="25">25</option>
+			  <option value="26">26</option>
+			  <option value="27">27</option>
+			  <option value="28">28</option>
+			  <option value="29">29</option>
+			  <option value="30">30</option>
+			  <option value="31">31</option>
+			</select> 
+		</div>
+
+		<input type="submit" class="btn btn-primary btn-lg btn-block"  value="SEND" />
+
+		</form>
+	</div>
+  </body>
+</html>
