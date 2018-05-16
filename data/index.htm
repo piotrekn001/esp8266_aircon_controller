@@ -52,5 +52,18 @@
 
 		</form>
 	</div>
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('form').submit(function(e) {
+				e.preventDefault();
+				$.get({
+					method: 'GET',
+					url: '/?mode=' + $('select[name=mode]').val() + '&temp=' + $('select[name=temp]').val()
+				});
+				return false;
+			});
+		});
+	</script>
   </body>
 </html>
